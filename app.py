@@ -6,73 +6,101 @@ import numpy as np
 # Настройка страницы
 st.set_page_config(page_title="Гармония в общении", page_icon="💬", layout="wide")
 
-# Мягкие цвета для женской аудитории
+# Стили: крупные ползунки + анимация смайликов
 st.markdown("""
 <style>
+    /* Увеличиваем ползунки */
+    .stSlider > div > div > div {
+        height: 12px !important;
+        border-radius: 6px !important;
+    }
+    .stSlider > div > div > div > div {
+        height: 24px !important;
+        width: 24px !important;
+        border-radius: 50% !important;
+        background-color: #a67c9f !important;
+        border: 2px solid white !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    }
+
+    /* Анимация для смайликов */
+    .emoji-container {
+        text-align: center;
+        font-size: 40px;
+        margin: 12px auto 20px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Мягкий фон */
     .reportview-container { background: #fdf6f0; }
     .sidebar .sidebar-content { background: #faf3ec; }
     h1, h2, h3 { color: #5a4a66; }
-    .stSlider > div > div > div { background: #e8d8c9; }
 </style>
 """, unsafe_allow_html=True)
 
 st.title("💬 Гармония в общении: как вам двоим комфортно вместе?")
+
+# === Вспомогательные функции для смайликов ===
+def render_emoji(val, low_emoji, mid_emoji, high_emoji):
+    if val <= 3:
+        emoji = low_emoji
+    elif val <= 6:
+        emoji = mid_emoji
+    else:
+        emoji = high_emoji
+    # Анимированный контейнер
+    st.markdown(f"""
+    <div class="emoji-container" style="opacity: 0.95;">
+        {emoji}
+    </div>
+    """, unsafe_allow_html=True)
 
 # === СБОР ДАННЫХ ===
 st.header("Расскажите немного о вас и вашем собеседнике")
 
 col1, col2 = st.columns(2)
 
-def get_emoji_openness(val):
-    return "🤖" if val <= 3 else "🙂" if val <= 6 else "✨"
-
-def get_emoji_conscientiousness(val):
-    return "🌀" if val <= 3 else "🙂" if val <= 6 else "🎯"
-
-def get_emoji_extraversion(val):
-    return "🕯️" if val <= 3 else "🙂" if val <= 6 else "🌟"
-
-def get_emoji_agreeableness(val):
-    return "😤" if val <= 3 else "🙂" if val <= 6 else "💖"
-
-def get_emoji_neuroticism(val):
-    return "🧘‍♀️" if val <= 3 else "😐" if val <= 6 else "🌧️"
-
 with col1:
     st.subheader("Вы")
     
     openness_a = st.slider("Любознательность и открытость новому", 1, 10, 7)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_openness(openness_a)}</div>", unsafe_allow_html=True)
+    render_emoji(openness_a, "🤖", "🙂", "✨")
     
     conscientiousness_a = st.slider("Организованность и надёжность", 1, 10, 6)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_conscientiousness(conscientiousness_a)}</div>", unsafe_allow_html=True)
+    render_emoji(conscientiousness_a, "🌀", "🙂", "🎯")
     
     extraversion_a = st.slider("Общительность и энергия в компании", 1, 10, 8)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_extraversion(extraversion_a)}</div>", unsafe_allow_html=True)
+    render_emoji(extraversion_a, "🕯️", "🙂", "🌟")
     
     agreeableness_a = st.slider("Доброта и умение идти на компромисс", 1, 10, 5)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_agreeableness(agreeableness_a)}</div>", unsafe_allow_html=True)
+    render_emoji(agreeableness_a, "😤", "🙂", "💖")
     
     neuroticism_a = st.slider("Эмоциональная устойчивость", 1, 10, 3)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_neuroticism(neuroticism_a)}</div>", unsafe_allow_html=True)
+    render_emoji(neuroticism_a, "🧘‍♀️", "😐", "🌧️")
 
 with col2:
     st.subheader("Ваш собеседник / партнёр")
     
     openness_b = st.slider("Любознательность и открытость новому", 1, 10, 5)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_openness(openness_b)}</div>", unsafe_allow_html=True)
+    render_emoji(openness_b, "🤖", "🙂", "✨")
     
     conscientiousness_b = st.slider("Организованность и надёжность", 1, 10, 9)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_conscientiousness(conscientiousness_b)}</div>", unsafe_allow_html=True)
+    render_emoji(conscientiousness_b, "🌀", "🙂", "🎯")
     
     extraversion_b = st.slider("Общительность и энергия в компании", 1, 10, 4)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_extraversion(extraversion_b)}</div>", unsafe_allow_html=True)
+    render_emoji(extraversion_b, "🕯️", "🙂", "🌟")
     
     agreeableness_b = st.slider("Доброта и умение идти на компромисс", 1, 10, 8)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_agreeableness(agreeableness_b)}</div>", unsafe_allow_html=True)
+    render_emoji(agreeableness_b, "😤", "🙂", "💖")
     
     neuroticism_b = st.slider("Эмоциональная устойчивость", 1, 10, 6)
-    st.markdown(f"<div style='text-align: center; font-size: 28px; margin-bottom: 15px;'>{get_emoji_neuroticism(neuroticism_b)}</div>", unsafe_allow_html=True)
+    render_emoji(neuroticism_b, "🧘‍♀️", "😐", "🌧️")
 
 st.header("Как вы взаимодействуете?")
 
@@ -104,7 +132,6 @@ with tab2:
     values_a = [openness_a, conscientiousness_a, extraversion_a, agreeableness_a, neuroticism_a]
     values_b = [openness_b, conscientiousness_b, extraversion_b, agreeableness_b, neuroticism_b]
     
-    # Радар-чарт с мягкими цветами
     fig, ax = plt.subplots(figsize=(10, 8), subplot_kw=dict(projection='polar'))
     angles = np.linspace(0, 2*np.pi, len(categories), endpoint=False).tolist()
     values_a += values_a[:1]
@@ -126,14 +153,11 @@ with tab2:
 with tab3:
     st.header("Что помогает вам понимать друг друга?")
     
-    # Расчёт с акцентом на понимание, а не на "конфликт"
     similarity = 1 - (np.abs(np.array(values_a[:-1]) - np.array(values_b[:-1])).mean() / 10)
     harmony = (min(extraversion_a, extraversion_b) + min(agreeableness_a, agreeableness_b)) / 20
     emotional_gap = (abs(agreeableness_a - agreeableness_b) + abs(neuroticism_a - neuroticism_b)) / 20
-    
     overall = (similarity + harmony + (1 - emotional_gap)) / 3
     
-    # Визуализация
     data = {
         'Аспект': ['Похожесть взглядов', 'Взаимодополнение', 'Эмоциональная близость', 'Общая гармония'],
         'Оценка': [similarity, harmony, 1 - emotional_gap, overall]
@@ -150,7 +174,6 @@ with tab3:
         ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2, f'{val:.2f}', va='center')
     st.pyplot(fig)
     
-    # Интерпретация — тёплая и поддерживающая
     st.subheader("Что это значит для вас?")
     
     if overall > 0.7:
@@ -200,13 +223,10 @@ with tab4:
         mime='text/csv',
     )
 
-# Боковая панель
 with st.sidebar:
     st.header("О чём это приложение?")
     st.write("""
     Здесь нет «теста» и «оценок».  
     Это инструмент, чтобы **лучше понять себя и другого человека** — без осуждения, с теплотой и уважением.
-    
-    Все параметры основаны на научной модели личности, но поданы так, чтобы быть **полезными в жизни**.
     """)
     st.info("🌸 Совет: проходите анализ вместе с близким человеком — это может стать началом тёплого разговора.")
